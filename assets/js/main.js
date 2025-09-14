@@ -1,10 +1,28 @@
-let url = location.host;//so it works locally and online
+//let url = location.host;//so it works locally and online
+let baseUrl = window.location.protocol + "//" + window.location.host; 
 
 $("table").rtResponsiveTables();//for the responsive tables plugin
 
-$("#add_drug").submit(function(event){//on a submit event on the element with id add_drug
-    alert($("#name").val() + " sent successfully!");//alert this in the browser
-})
+$("#add_drug").submit(function(event){
+    event.preventDefault(); // chặn submit mặc định
+
+    var formData = $(this).serialize();
+
+    $.ajax({
+        url: `${baseUrl}/api/drugs`,
+        method: "POST",
+        data: formData,
+        success: function(response){
+            alert("Drug added successfully!");
+            window.location.href = "/manage";
+        },
+        error: function(xhr){
+            // Nếu server gửi lỗi (validateDrug fail) -> hiện alert lỗi
+            const errorMsg = xhr.responseJSON?.error || xhr.responseJSON?.message || "There was an error while adding the drug";
+            alert(errorMsg);
+        }
+    });
+});
 
 
 
@@ -21,7 +39,7 @@ $("#update_drug").submit(function(event){// on clicking submit
 
 
     var request = {//use a put API request to use data from above to replace what's on database
-    "url" : `https://${url}/api/drugs/${data.id}`,
+    "url" : `${baseUrl}/api/drugs/${data.id}`,
     "method" : "PUT",
     "data" : data
 }
@@ -32,20 +50,20 @@ $.ajax(request).done(function(response){
     })
 
 })
-
+//delete
 if(window.location.pathname == "/manage"){//since items are listed on manage
     $ondelete = $("table tbody td a.delete"); //select the anchor with class delete
     $ondelete.click(function(){//add click event listener
         let id = $(this).attr("data-id") // pick the value from the data-id
 
         let request = {//save API request in variable
-            "url" : `https://${url}/api/drugs/${id}`,
+            "url" : `${baseUrl}/api/drugs/${id}`,
             "method" : "DELETE"
         }
 
         if(confirm("Do you really want to delete this drug?")){// bring out confirm box
             $.ajax(request).done(function(response){// if confirmed, send API request
-                alert("Drug deleted Successfully!");//show an alert that it's done
+                alert("Drug deleted Successfully!");//show an alert that it'    s done
                 location.reload();//reload the page
             })
         }

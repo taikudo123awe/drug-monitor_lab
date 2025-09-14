@@ -23,7 +23,7 @@ exports.create = (req,res)=>{
         .save(drug)//use the save operation on drug
         .then(data => {
             console.log(`${data.name} added to the database`) 
-            res.redirect('/manage');
+            res.status(200).json({ message: "Drug added successfully!" });
         })
         .catch(err =>{
             res.status(500).send({//catch error
@@ -110,3 +110,33 @@ exports.delete = (req,res)=>{
         });
 
 }
+// purchase drugs for X days
+exports.purchase = async (req, res, next) => {
+    try {
+        const days = Number(req.body.days || req.query.days || 30);
+        const drugs = await Drugdb.find();
+        let result = [];
+
+        for (let drug of drugs) {
+            let pills = days * drug.perDay;
+            let cardsToBuy = Math.ceil(pills / drug.card);
+            let packsToBuy = Math.ceil(cardsToBuy / drug.pack);
+
+            result.push({
+                name: drug.name,
+                pills,
+                cardsToBuy,
+                packsToBuy,
+                card: drug.card,
+                pack: drug.pack
+            });
+        }
+
+        res.render("purchase", { drugs: result, days });
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+

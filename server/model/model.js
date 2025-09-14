@@ -21,7 +21,6 @@ let schema = new mongoose.Schema({
     perDay : {
         type: Number,
         required: true,
-        unique: true
     },
 })
 

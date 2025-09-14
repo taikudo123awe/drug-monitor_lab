@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An app to plan and organize prescription drug purchases  For older people on medication, it's hard to remember what to take and when to buy.",
   "main": "index.js",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
@@ -15,7 +16,7 @@
     "monitor",
     "node"
   ],
-  "author": "Peter Banigo",
+  "author": "Tran Tan Tai",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",

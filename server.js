@@ -20,6 +20,23 @@ connectMongo();
 
 //load the routes
 app.use('/',require('./server/routes/routes'));//Pulls the routes file whenever this is loaded
+// 404 handler (nếu không khớp route nào)
+app.use((req, res, next) => {
+    res.status(404).render("error", { 
+        title: "Page Not Found", 
+        message: "404 The page you are looking for does not exist." 
+    });
+});
+
+// Error handler middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack); // log lỗi ra console để debug
+
+    res.status(500).render("error", { 
+        title: "Server Error", 
+        message: "Something went wrong on the server!" 
+    });
+});
 
 
 app.listen(PORT, function() {//specifies port to listen on
